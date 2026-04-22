@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 39% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 39% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 244 75% 59%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 222 34% 16%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 222 34% 16%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 262 83% 66%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 222 34% 20%;
+    --input: 222 34% 18%;
+    --ring: 244 75% 59%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(1200px circle at 15% -10%, rgba(99, 102, 241, 0.18), transparent 45%),
+      radial-gradient(900px circle at 95% 10%, rgba(139, 92, 246, 0.16), transparent 50%),
+      radial-gradient(700px circle at 50% 110%, rgba(99, 102, 241, 0.12), transparent 45%);
+    background-attachment: fixed;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    background: rgba(139, 92, 246, 0.35);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-card/60 backdrop-blur-xl border border-white/5;
+  }
+
+  .glass-strong {
+    @apply bg-card/80 backdrop-blur-2xl border border-white/10;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent;
+  }
+
+  .btn-gradient {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  }
+
+  .shine {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.06) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
