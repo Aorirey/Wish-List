@@ -2,9 +2,6 @@
 
 import { motion } from "framer-motion";
 import { ExternalLink, Plus, Star } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import type { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 
@@ -16,78 +13,108 @@ interface Props {
 
 export function ProductCard({ product, onAdd, delay = 0 }: Props) {
   return (
-    <motion.div
+    <motion.article
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.3, delay, ease: "easeOut" }}
-      whileHover={{ y: -3 }}
-      className="h-full"
+      transition={{ duration: 0.35, delay, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98 }}
+      className="group relative h-full"
     >
-      <Card className="flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-glow">
-        <div className="relative aspect-square overflow-hidden bg-white/5">
+      <div className="ios-glass ios-specular relative flex h-full flex-col overflow-hidden rounded-3xl transition-shadow duration-300 group-hover:shadow-glow">
+        {/* image */}
+        <div className="relative aspect-square overflow-hidden rounded-t-3xl bg-gradient-to-br from-white/10 via-white/5 to-white/0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={product.image}
             alt={product.title}
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           />
-          <div className="absolute left-3 top-3 flex gap-1.5">
-            <Badge variant="primary">{product.category}</Badge>
-            {!product.inStock && <Badge variant="warning">Ожидается</Badge>}
+
+          {/* subtle gradient under badges */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/35 via-black/10 to-transparent"
+          />
+
+          {/* floating glass chips: category + stock */}
+          <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+            <span className="ios-glass-chip inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium text-white">
+              {product.category}
+            </span>
+            {!product.inStock && (
+              <span className="ios-glass-chip inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium text-amber-100">
+                Ожидается
+              </span>
+            )}
           </div>
+
+          {/* store chip */}
           <div className="absolute right-3 top-3">
-            <Badge variant="outline" className="bg-black/40 backdrop-blur">
+            <span className="ios-glass-chip inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium text-white/90">
               {product.store}
-            </Badge>
+            </span>
+          </div>
+
+          {/* rating chip */}
+          <div className="absolute left-3 bottom-3">
+            <span className="ios-glass-chip inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium text-white">
+              <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+              {product.rating.toFixed(1)}
+            </span>
           </div>
         </div>
 
-        <div className="flex flex-1 flex-col p-4">
-          <h3 className="line-clamp-2 text-sm font-medium leading-snug min-h-[2.5rem]">
+        {/* body */}
+        <div className="flex flex-1 flex-col px-4 pt-3 pb-3">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-[13px] font-medium leading-snug tracking-[-0.01em] text-foreground">
             {product.title}
           </h3>
 
-          <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-            <span className="text-foreground">{product.rating.toFixed(1)}</span>
-            <span>·</span>
-            <span>{product.inStock ? "В наличии" : "Ожидается"}</span>
+          <div className="mt-1 text-[11px] text-muted-foreground">
+            {product.inStock ? "В наличии" : "Ожидается"}
           </div>
 
-          <div className="mt-auto pt-4 flex items-center justify-between gap-2">
-            <div>
-              <p className="text-xs text-muted-foreground">Цена</p>
-              <p className="text-base font-semibold">
+          {/* iOS-style bottom glass bar with price + actions */}
+          <div className="mt-3 ios-glass-chip relative flex items-center justify-between gap-2 rounded-2xl px-3 py-2">
+            <div className="min-w-0">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Цена
+              </p>
+              <p className="truncate text-[15px] font-semibold tabular-nums">
                 {formatPrice(product.price, product.currency)}
               </p>
             </div>
+
             <div className="flex items-center gap-1.5">
-              <Button
-                asChild
-                variant="ghost"
-                size="icon"
+              <motion.a
+                href={product.url}
+                target="_blank"
+                rel="noreferrer"
                 aria-label="Открыть в магазине"
+                whileTap={{ scale: 0.9 }}
+                className="ios-glass-btn inline-flex h-9 w-9 items-center justify-center rounded-full text-white"
               >
-                <a href={product.url} target="_blank" rel="noreferrer">
-                  <ExternalLink className="h-4 w-4" />
-                </a>
-              </Button>
+                <ExternalLink className="h-4 w-4" />
+              </motion.a>
               {onAdd && (
-                <Button
+                <motion.button
+                  type="button"
                   onClick={() => onAdd(product)}
-                  size="sm"
                   aria-label="В вишлист"
+                  whileTap={{ scale: 0.94 }}
+                  className="relative inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[12px] font-semibold text-white btn-gradient shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_10px_24px_-12px_rgba(99,102,241,0.7)] transition-[filter] duration-200 hover:brightness-110"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-3.5 w-3.5" />
                   В список
-                </Button>
+                </motion.button>
               )}
             </div>
           </div>
         </div>
-      </Card>
-    </motion.div>
+      </div>
+    </motion.article>
   );
 }
